@@ -134,24 +134,38 @@ async def relatorio_command(update: Update, context: ContextTypes.DEFAULT_TYPE) 
         await update.message.reply_text("❌ Ocorreu um erro ao gerar seu relatório visual. Tente novamente.")
 
 
+import urllib.parse
+
 async def share_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handler do comando /compartilhar."""
     bot_info = await context.bot.get_me()
     bot_username = bot_info.username
 
     text = (
-        f"📢 *Compartilhe o Não Compre - Bot!*\n\n"
-        f"Ajude seus amigos e grupos a controlarem compras impulsivas e economizarem dinheiro! 💰\n\n"
-        f"🔗 *Link Direto (Conversa Privada):*\n"
-        f"https://t.me/{bot_username}\n\n"
-        f"👥 *Adicionar a um Grupo:*\n"
-        f"https://t.me/{bot_username}?startgroup=true"
+        f"📢 *Compartilhar o Não Compre - Bot*\n\n"
+        f"Ajude amigos e grupos a evitarem compras impulsivas.\n\n"
+        f"*Como funciona:*\n"
+        f"• Cadastre o produto ou link\n"
+        f"• Receba lembretes de resfriamento (24h, 7d, 15d e 30d)\n"
+        f"• Decida com calma e acompanhe sua economia em relatórios\n\n"
+        f"🔗 *Link direto:* https://t.me/{bot_username}\n"
+        f"👥 *Adicionar a grupo:* https://t.me/{bot_username}?startgroup=true"
     )
+
+    # Mensagem pragmática enviada para quem RECEBE o compartilhamento
+    share_msg = (
+        "Não Compre - Bot de Consumo Consciente\n\n"
+        "Bot para evitar compras por impulso. Você envia o produto ou link e ele agenda lembretes em 24h, 7 dias, 15 dias e 30 dias para você decidir se realmente precisa do item.\n\n"
+        "Inclui relatórios gráficos da sua economia acumulada.\n\n"
+        "Acesse no Telegram:"
+    )
+
+    share_url = f"https://t.me/share/url?url=https://t.me/{bot_username}&text={urllib.parse.quote(share_msg)}"
 
     keyboard = [
         [
             InlineKeyboardButton("👥 Adicionar ao Grupo", url=f"https://t.me/{bot_username}?startgroup=true"),
-            InlineKeyboardButton("📲 Compartilhar com Amigos", url=f"https://t.me/share/url?url=https://t.me/{bot_username}&text=Conhe%C3%A7a%20o%20N%C3%A3o%20Compre%20Bot%20-%20Controle%20de%20compras%20impulsivas!")
+            InlineKeyboardButton("📲 Compartilhar", url=share_url)
         ]
     ]
 
