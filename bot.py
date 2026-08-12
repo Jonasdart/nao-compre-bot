@@ -11,7 +11,13 @@ from telegram.ext import (
 from config import TELEGRAM_BOT_TOKEN
 import database as db
 import scheduler
-from handlers.commands import start_command, help_command, minhalista_command, relatorio_command
+from handlers.commands import (
+    start_command,
+    help_command,
+    minhalista_command,
+    relatorio_command,
+    share_command,
+)
 from handlers.messages import handle_product_message
 from handlers.callbacks import handle_callback_query
 
@@ -51,6 +57,7 @@ def main() -> None:
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("minhalista", minhalista_command))
     app.add_handler(CommandHandler("relatorio", relatorio_command))
+    app.add_handler(CommandHandler(["compartilhar", "share"], share_command))
 
     # Registrar Handlers de Interatividade
     app.add_handler(CallbackQueryHandler(handle_callback_query))
