@@ -52,9 +52,12 @@ async def handle_product_message(update: Update, context: ContextTypes.DEFAULT_T
     url = parsed["url"]
     category = parsed["category"]
 
+    chat_id = update.effective_chat.id
+
     # Criação do item no banco
     item_id = db.create_item(
         user_id=user.id,
+        chat_id=chat_id,
         title=title,
         price=price,
         url=url,
@@ -62,7 +65,7 @@ async def handle_product_message(update: Update, context: ContextTypes.DEFAULT_T
     )
 
     # Agendamento dos checkpoints de resfriamento e auto-expiração
-    scheduler.schedule_item_checkpoints(item_id=item_id, user_id=user.id)
+    scheduler.schedule_item_checkpoints(item_id=item_id, target_chat_id=chat_id)
 
     # Mensagem de confirmação imediata (Checkpoint 0)
     text = (

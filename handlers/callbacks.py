@@ -64,7 +64,8 @@ async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TY
 
     elif action == "snooze":
         # Adiar por 7 dias
-        new_date = scheduler.snooze_item_checkpoint(item_id, user.id)
+        target_chat_id = item.get("chat_id") or update.effective_chat.id
+        new_date = scheduler.snooze_item_checkpoint(item_id, target_chat_id)
         date_str = new_date.strftime("%d/%m/%Y às %H:%M")
 
         text = (

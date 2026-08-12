@@ -32,6 +32,7 @@ def init_db() -> None:
             CREATE TABLE IF NOT EXISTS wishlist_items (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id INTEGER NOT NULL,
+                chat_id INTEGER,
                 title TEXT NOT NULL,
                 price REAL NOT NULL,
                 url TEXT,
@@ -44,6 +45,13 @@ def init_db() -> None:
                 FOREIGN KEY(user_id) REFERENCES users(user_id)
             );
         """)
+        
+        # Migration: garante a existência da coluna chat_id para bancos legados
+        try:
+            cursor.execute("ALTER TABLE wishlist_items ADD COLUMN chat_id INTEGER;")
+        except sqlite3.OperationalError:
+            pass
+
         conn.commit()
 
 
@@ -59,14 +67,16 @@ def upsert_user(user_id: int, first_name: str) -> None:
         conn.commit()
 
 
-def create_item(user_id: int, title: str, price: float, url: Optional[str], category: str) -> int:
+def create_item(user_id: int, title: str, price: float, url: Optional[str], category: str, chat_id: Optional[int] = None) -> int:
     """Cria um novo item na lista de desejos e retorna o ID gerado."""
+    if chat_id is None:
+        chat_id = user_id
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO wishlist_items (user_id, title, price, url, category, status, checkpoint_stage)
-            VALUES (?, ?, ?, ?, ?, 'PENDING', 0);
-        """, (user_id, title, price, url, category))
+            INSERT INTO wishlist_items (user_id, chat_id, title, price, url, category, status, checkpoint_stage)
+            VALUES (?, ?, ?, ?, ?, ?, 'PENDING', 0);
+        """, (user_id, chat_id, title, price, url, category))
         conn.commit()
         return cursor.lastrowid
 

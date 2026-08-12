@@ -36,7 +36,7 @@ def cancel_item_jobs(item_id: int) -> None:
         scheduler.remove_job(expire_job_id)
 
 
-def schedule_item_checkpoints(item_id: int, user_id: int, base_time: Optional[datetime] = None) -> None:
+def schedule_item_checkpoints(item_id: int, target_chat_id: int, base_time: Optional[datetime] = None) -> None:
     """Agenda os 4 checkpoints e o job de auto-expiração para um item."""
     if base_time is None:
         base_time = datetime.now()
@@ -55,7 +55,7 @@ def schedule_item_checkpoints(item_id: int, user_id: int, base_time: Optional[da
                 send_checkpoint_notification,
                 'date',
                 run_date=run_date,
-                args=[item_id, user_id, stage],
+                args=[item_id, target_chat_id, stage],
                 id=job_id,
                 replace_existing=True
             )
@@ -70,13 +70,13 @@ def schedule_item_checkpoints(item_id: int, user_id: int, base_time: Optional[da
             handle_auto_expiration,
             'date',
             run_date=expire_run_date,
-            args=[item_id, user_id],
+            args=[item_id, target_chat_id],
             id=expire_job_id,
             replace_existing=True
         )
 
 
-def snooze_item_checkpoint(item_id: int, user_id: int) -> datetime:
+def snooze_item_checkpoint(item_id: int, target_chat_id: int) -> datetime:
     """Reagenda o 4º checkpoint para +7 dias a partir de agora e ajusta a auto-expiração."""
     now = datetime.now()
     new_stage4_date = now + timedelta(hours=SNOOZE_HOURS)
@@ -96,7 +96,7 @@ def snooze_item_checkpoint(item_id: int, user_id: int) -> datetime:
         send_checkpoint_notification,
         'date',
         run_date=new_stage4_date,
-        args=[item_id, user_id, 4],
+        args=[item_id, target_chat_id, 4],
         id=stage4_job_id,
         replace_existing=True
     )
@@ -105,7 +105,7 @@ def snooze_item_checkpoint(item_id: int, user_id: int) -> datetime:
         handle_auto_expiration,
         'date',
         run_date=new_expire_date,
-        args=[item_id, user_id],
+        args=[item_id, target_chat_id],
         id=expire_job_id,
         replace_existing=True
     )
@@ -113,7 +113,7 @@ def snooze_item_checkpoint(item_id: int, user_id: int) -> datetime:
     return new_stage4_date
 
 
-async def send_checkpoint_notification(item_id: int, user_id: int, stage: int) -> None:
+async def send_checkpoint_notification(item_id: int, target_chat_id: int, stage: int) -> None:
     """Envio assíncrono da notificação de lembrete do checkpoint no Telegram."""
     if not _telegram_app:
         logger.error("Telegram App não inicializado no scheduler.")
@@ -122,6 +122,9 @@ async def send_checkpoint_notification(item_id: int, user_id: int, stage: int) -
     item = db.get_item_by_id(item_id)
     if not item or item["status"] != "PENDING":
         return
+
+    # Utiliza o chat_id armazenado no banco ou a chave de destino
+    chat_to_send = item.get("chat_id") or target_chat_id
 
     # Atualiza o estágio no banco
     db.update_item_checkpoint(item_id, stage)
@@ -160,16 +163,16 @@ async def send_checkpoint_notification(item_id: int, user_id: int, stage: int) -
 
     try:
         await _telegram_app.bot.send_message(
-            chat_id=user_id,
+            chat_id=chat_to_send,
             text=text,
             parse_mode="Markdown",
             reply_markup=reply_markup
         )
     except Exception as e:
-        logger.error(f"Erro ao enviar notificação de checkpoint para user {user_id}: {e}")
+        logger.error(f"Erro ao enviar notificação de checkpoint para chat {chat_to_send}: {e}")
 
 
-async def handle_auto_expiration(item_id: int, user_id: int) -> None:
+async def handle_auto_expiration(item_id: int, target_chat_id: int) -> None:
     """Trata a expiração automática de um item não respondido após 48h do último checkpoint."""
     if not _telegram_app:
         return
@@ -177,6 +180,8 @@ async def handle_auto_expiration(item_id: int, user_id: int) -> None:
     item = db.get_item_by_id(item_id)
     if not item or item["status"] != "PENDING":
         return
+
+    chat_to_send = item.get("chat_id") or target_chat_id
 
     # Atualiza para EXPIRED no banco
     db.update_item_status(item_id, "EXPIRED")
@@ -192,12 +197,12 @@ async def handle_auto_expiration(item_id: int, user_id: int) -> None:
 
     try:
         await _telegram_app.bot.send_message(
-            chat_id=user_id,
+            chat_id=chat_to_send,
             text=text,
             parse_mode="Markdown"
         )
     except Exception as e:
-        logger.error(f"Erro ao enviar notificação de expiração para user {user_id}: {e}")
+        logger.error(f"Erro ao enviar notificação de expiração para chat {chat_to_send}: {e}")
 
 
 def restore_pending_jobs() -> None:
@@ -211,4 +216,5 @@ def restore_pending_jobs() -> None:
         except Exception:
             created_at = datetime.now()
 
-        schedule_item_checkpoints(item["id"], item["user_id"], created_at)
+        chat_id = item.get("chat_id") or item["user_id"]
+        schedule_item_checkpoints(item["id"], chat_id, created_at)
