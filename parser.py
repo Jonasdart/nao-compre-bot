@@ -6,6 +6,13 @@ from config import CATEGORIES
 
 # Dicionário de palavras-chave para categorização automática (Smart Matching)
 KEYWORD_CATEGORY_MAP = {
+    "Casa & Cozinha": [
+        "jogo de cama", "jogo de panela", "jogo de toalha", "jogo de jantar", "jogo de xícaras",
+        "lençol", "lencol", "edredom", "fronha", "coberta", "travesseiro", "toalha", "panela",
+        "airfryer", "fritadeira", "cadeira", "mesa", "sofa", "sofá", "cama", "colchão", "colchao",
+        "geladeira", "fogão", "fogao", "microondas", "micro-ondas", "aspirador", "lampada",
+        "lâmpada", "organizador", "copo", "caneca", "prato", "almofada", "ventilador", "ar condicionado"
+    ],
     "Eletrônicos": [
         "fone", "celular", "smartphone", "notebook", "pc", "monitor", "tv", "bluetooth",
         "headset", "teclado", "mouse", "ipad", "tablet", "placa", "processador", "ram",
@@ -19,15 +26,9 @@ KEYWORD_CATEGORY_MAP = {
         "mochila", "cinto"
     ],
     "Games & Software": [
-        "jogo", "game", "ps5", "ps4", "xbox", "nintendo", "switch", "steam", "playstation",
-        "gta", "fifa", "zelda", "mario", "licença", "licenca", "software", "controle",
-        "joystick", "pass", "plus", "card"
-    ],
-    "Casa & Cozinha": [
-        "panela", "airfryer", "fritadeira", "cadeira", "mesa", "sofa", "sofá", "cama",
-        "colchão", "colchao", "geladeira", "fogão", "fogao", "microondas", "micro-ondas",
-        "aspirador", "lampada", "lâmpada", "organizador", "copo", "caneca", "prato",
-        "almofada", "ventilador", "ar condicionado"
+        "videogame", "video game", "game", "games", "gaming", "ps5", "ps4", "xbox", "nintendo",
+        "switch", "steam", "playstation", "gta", "fifa", "zelda", "mario", "licença", "licenca",
+        "software", "controle de ps", "joystick", "game pass", "ps plus"
     ],
     "Cosméticos & Beleza": [
         "perfume", "creme", "maquiagem", "batom", "shampoo", "condicionador", "sabonete",
