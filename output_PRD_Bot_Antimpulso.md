@@ -1,5 +1,5 @@
 # Product Requirement Document (PRD)
-## Bot Telegram Antimpulso de Compras (`AntiImpulseBot`)
+## Bot Telegram Não Compre (`nao-compre-bot`)
 
 ---
 

@@ -1,11 +1,11 @@
-# 🧠 AntiImpulseBot — Bot Telegram Antimpulso de Compras
+# 🛑 Não Compre — Bot Telegram de Consumo Consciente
 
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
 [![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED.svg?logo=docker&logoColor=white)](https://www.docker.com/)
 [![Telegram Bot API](https://img.shields.io/badge/Telegram%20Bot%20API-v20%2B-26A5E4.svg?logo=telegram&logoColor=white)](https://core.telegram.org/bots/api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-O **AntiImpulseBot** é uma aplicação interativa para o Telegram projetada para combater compras impulsivas através do conceito de **"Atrito Positivo"**. Ao desacelerar o ciclo de gratificação imediata do *checkout*, o bot intercepta a intenção de compra e ajuda o usuário a reavaliar a real necessidade dos itens em quatro intervalos estratégicos de tempo (**24h, 7d, 15d e 30d**).
+O **Não Compre - Bot** é uma aplicação interativa para o Telegram projetada para combater compras impulsivas através do conceito de **"Atrito Positivo"**. Ao desacelerar o ciclo de gratificação imediata do *checkout*, o bot intercepta a intenção de compra e ajuda o usuário a reavaliar a real necessidade dos itens em quatro intervalos estratégicos de tempo (**24h, 7d, 15d e 30d**).
 
 Além do diferimento da compra, o bot monitora a taxa de descarte, calcula a economia acumulada e gera **relatórios visuais em modo escuro (Dark Mode)** com gráficos consolidados.
 
@@ -15,7 +15,7 @@ Além do diferimento da compra, o bot monitora a taxa de descarte, calcula a eco
 
 * ⚡ **Cadastro Instantâneo & Parsing Inteligente:**
   * Suporta mensagens em texto livre no formato `Nome do Produto 250.00` ou `Camiseta Nike R$ 120,00`.
-  * Suporta o envio direto de links (URLs) de e-commerce (*Amazon, Mercado Livre, Shopee, Magalu, AliExpress*), com extração automática de título, preço e link público.
+  * Suporta o envio direto de links (URLs) de e-commerce (*Amazon, Mercado Livre, Shopee, Magalu, AliExpress*), com extração automática de título, preço em R$ e link público.
 * 🏷️ **Categorização Automática (*Smart Matching*):**
   * Classificação automática entre: *Eletrônicos*, *Vestuário*, *Games & Software*, *Casa & Cozinha*, *Cosméticos & Beleza* e *Geral*.
 * ✏️ **Edição Flexível de Preço:**
@@ -71,8 +71,8 @@ Além do diferimento da compra, o bot monitora a taxa de descarte, calcula a eco
 ### Passo 1: Clonar o Repositório
 
 ```bash
-git clone https://github.com/seu-usuario/antiimpulse-bot.git
-cd antiimpulse-bot
+git clone https://github.com/Jonasdart/nao-compre-bot.git
+cd nao-compre-bot
 ```
 
 ### Passo 2: Configurar o Arquivo `.env`
@@ -99,7 +99,7 @@ docker compose up -d --build
 Verifique se o bot está rodando e acompanhe os logs em tempo real:
 
 ```bash
-docker compose logs -f antiimpulse_bot
+docker compose logs -f nao_compre_bot
 ```
 
 ---

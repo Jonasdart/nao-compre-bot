@@ -28,7 +28,7 @@ async def post_init(application) -> None:
     db.init_db()
     scheduler.init_scheduler(application)
     scheduler.restore_pending_jobs()
-    logger.info("✨ AntiImpulseBot inicializado com sucesso e escutando requisições!")
+    logger.info("✨ Não Compre - Bot inicializado com sucesso e escutando requisições!")
 
 
 def main() -> None:

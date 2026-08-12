@@ -17,7 +17,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     db.upsert_user(user.id, user.first_name)
 
     text = (
-        f"Olá, *{user.first_name}*! 👋 Bem-vindo ao *AntiImpulseBot*!\n\n"
+        f"Olá, *{user.first_name}*! 👋 Bem-vindo ao *Não Compre - Bot*!\n\n"
         f"Meu objetivo é te ajudar a **evitar compras impulsivas** criando um *atrito positivo* na sua jornada de consumo.\n\n"
         f"💡 *Como funciona?*\n"
         f"Sempre que quiser comprar algo, me envie o nome do item e o valor (ex: `Fone Bluetooth 250.00` ou um link do produto).\n\n"
@@ -38,7 +38,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handler do comando /help."""
     text = (
-        "📖 *Manual de Uso do AntiImpulseBot*\n\n"
+        "📖 *Manual de Uso do Não Compre - Bot*\n\n"
         "1️⃣ *Cadastrar um Produto:*\n"
         "Envie uma mensagem simples com o nome e o valor. Exemplos:\n"
         "• `Camiseta Nike R$ 120,00`\n"

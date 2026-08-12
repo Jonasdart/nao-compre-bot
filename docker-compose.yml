@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
-  antiimpulse_bot:
+  nao_compre_bot:
     build: .
-    container_name: antiimpulse_bot
+    container_name: nao_compre_bot
     restart: unless-stopped
     env_file:
       - .env
