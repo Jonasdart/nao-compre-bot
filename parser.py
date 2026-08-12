@@ -184,6 +184,37 @@ def categorize_text(text: str) -> str:
     return "Geral"
 
 
+import urllib.parse
+
+def extract_title_from_url_slug(url: str) -> Optional[str]:
+    """Extrai um título legível a partir da estrutura de URL de e-commerce (Shopee, Amazon, Mercado Livre)."""
+    try:
+        parsed = urllib.parse.urlparse(url)
+        path = urllib.parse.unquote(parsed.path)
+        
+        # Remove sufixos de id e referências
+        path = re.sub(r'-i\.\d+\.\d+.*$', '', path)
+        path = re.sub(r'/dp/[A-Z0-9]+.*$', '', path)
+        path = re.sub(r'/ref=.*$', '', path)
+        path = re.sub(r'\.html.*$', '', path)
+        path = re.sub(r'/p/[A-Z0-9]+.*$', '', path)
+        
+        segments = [s for s in path.split('/') if s and not s.isdigit() and len(s) > 2]
+        if not segments:
+            return None
+        
+        slug = max(segments, key=len)
+        clean_slug = slug.replace('-', ' ').replace('_', ' ')
+        clean_slug = re.sub(r'\b(MLB|JM|dp|ref|product|item)\d*\b', '', clean_slug, flags=re.IGNORECASE)
+        clean_slug = re.sub(r'\s+', ' ', clean_slug).strip()
+        
+        if len(clean_slug) >= 4 and not clean_slug.isdigit():
+            return clean_slug.title()[:100]
+    except Exception:
+        pass
+    return None
+
+
 async def parse_product_message(raw_text: str) -> dict:
     """
     Analisa a mensagem recebida e retorna um dicionário estruturado:
@@ -215,14 +246,20 @@ async def parse_product_message(raw_text: str) -> dict:
     else:
         final_price = 0.0
 
-    # Prioriza o título do texto do usuário se for suficiente, caso contrário usa o título da página web
+    # Prioriza o título do texto do usuário se fornecido, caso contrário usa o título da página web ou slug da URL
     title = text_clean.strip()
-    if not title or len(title) < 2:
-        if web_title:
+    generic_titles = ["shopee brasil", "shopee", "mercado livre", "amazon", "magalu", "magazineluiza", "sem título"]
+    
+    if not title or len(title) < 2 or title.lower() in generic_titles or title.lower().startswith("produto em "):
+        if web_title and web_title.lower() not in generic_titles and not web_title.lower().startswith("produto em "):
             title = web_title
         elif url:
-            domain = url.split('/')[2].replace('www.', '')
-            title = f"Produto em {domain}"
+            slug_title = extract_title_from_url_slug(url)
+            if slug_title:
+                title = slug_title
+            else:
+                domain = url.split('/')[2].replace('www.', '')
+                title = f"Produto em {domain}"
         else:
             title = "Item sem nome"
 

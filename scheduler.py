@@ -142,6 +142,9 @@ async def send_checkpoint_notification(item_id: int, target_chat_id: int, stage:
 
     text = messages.get(stage, f"⏰ Lembrete de Resfriamento para *{title}* (R$ {price:.2f}).")
 
+    if item.get("url"):
+        text += f"\n\n🔗 [Link do Produto]({item['url']})"
+
     # Botões inline
     keyboard = [
         [
